@@ -1,5 +1,64 @@
-# Welcome to GitHub Desktop!
+# Playwright E2E: `https://dev.3snet.info/eventswidget/`
 
-This is your README. READMEs are where you can communicate what your project is and how to use it.
+Автотестовый проект на **Playwright + JavaScript** для проверки базовой работоспособности виджета событий.
 
-Write your name on line 6, save it, and then head back to GitHub Desktop.
+## Что проверяется
+
+Набор тестов (`tests/eventswidget.spec.js`) покрывает:
+
+1. **Доступность страницы**
+   - переход на URL;
+   - URL/заголовок соответствуют ожидаемому паттерну.
+2. **Рендер виджета**
+   - обнаружение корневого контейнера виджета;
+   - наличие карточек событий.
+3. **Качество контента карточек**
+   - в каждой карточке есть непустой читаемый текст.
+4. **Базовая интерактивность**
+   - на странице присутствует минимум один кликабельный элемент, связанный с событием.
+
+## Наблюдения по странице
+
+- Верстка может меняться (названия классов), поэтому в проекте используется набор **fallback-селекторов**.
+- Тесты пишут в отчет информацию о том, какие селекторы реально сработали (`resolved-selectors.json`).
+- Для предсказуемости запуск настроен на `chromium`.
+
+## Структура
+
+```text
+tests/
+  helpers/widget-selectors.js      # контракт селекторов (включая fallback)
+  pages/events-widget.page.js      # Page Object для страницы виджета
+  eventswidget.spec.js             # E2E сценарии
+playwright.config.js               # конфигурация Playwright
+```
+
+## Локальный запуск
+
+> Требуется Node.js 18+
+
+1. Установить зависимости:
+
+```bash
+npm install
+npx playwright install --with-deps
+```
+
+2. Запустить тесты:
+
+```bash
+npm test
+```
+
+## Дополнительные команды
+
+```bash
+npm run test:headed   # запуск с UI браузера
+npm run test:report   # открыть HTML-отчет
+```
+
+## Формат результата
+
+- Консольный вывод Playwright (`list` reporter).
+- HTML-отчет (`playwright-report`).
+- При падениях: trace, screenshot, video.

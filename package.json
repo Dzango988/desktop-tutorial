@@ -1,0 +1,15 @@
+{
+  "name": "eventswidget-playwright-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Automated Playwright tests for https://dev.3snet.info/eventswidget/",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:ci": "playwright test --reporter=line",
+    "test:report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.53.0"
+  }
+}
