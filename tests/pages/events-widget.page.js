@@ -7,7 +7,7 @@ class EventsWidgetPage {
   }
 
   async open() {
-    const response = await this.page.goto('/', { waitUntil: 'domcontentloaded' });
+    const response = await this.page.goto('./', { waitUntil: 'domcontentloaded' });
     expect(response, 'Navigation should return an HTTP response').not.toBeNull();
     expect(response.status(), 'Page should answer with successful/redirect status').toBeLessThan(400);
   }
