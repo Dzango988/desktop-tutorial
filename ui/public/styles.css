@@ -36,3 +36,14 @@ button:disabled {
 pre {
   white-space: pre-wrap;
 }
+
+
+a {
+  color: #1d4ed8;
+  text-decoration: none;
+  margin-left: 12px;
+}
+
+a:hover {
+  text-decoration: underline;
+}

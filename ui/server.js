@@ -10,6 +10,7 @@ const ROOT = path.resolve(__dirname, '..');
 const PUBLIC_DIR = path.join(__dirname, 'public');
 const DATA_DIR = path.join(__dirname, 'data');
 const HISTORY_FILE = path.join(DATA_DIR, 'runs-history.json');
+const REPORT_DIR = path.join(ROOT, 'playwright-report');
 
 let activeRun = null;
 
@@ -27,6 +28,11 @@ function readHistory() {
 
 function writeHistory(history) {
   fs.writeFileSync(HISTORY_FILE, JSON.stringify(history, null, 2), 'utf8');
+}
+
+
+function hasHtmlReport() {
+  return fs.existsSync(path.join(REPORT_DIR, 'index.html'));
 }
 
 function parseJsonReport(reportPath) {
@@ -88,7 +94,8 @@ function runTests() {
     stats: null,
     tests: [],
     log: '',
-    logTail: ''
+    logTail: '',
+    reportUrl: null
   };
 
   activeRun = runRecord;
@@ -119,6 +126,7 @@ function runTests() {
       runRecord.stats = parsed.stats;
       runRecord.tests = parsed.tests;
       runRecord.logTail = runRecord.log.split('\n').slice(-80).join('\n');
+      runRecord.reportUrl = hasHtmlReport() ? '/report/index.html' : null;
 
       const history = readHistory();
       history.unshift(runRecord);
@@ -162,7 +170,8 @@ const server = http.createServer(async (req, res) => {
   if (req.method === 'GET' && req.url === '/api/runs') {
     return sendJson(res, 200, {
       activeRun,
-      history: readHistory()
+      history: readHistory(),
+      latestReportUrl: hasHtmlReport() ? '/report/index.html' : null
     });
   }
 
@@ -176,6 +185,32 @@ const server = http.createServer(async (req, res) => {
       console.error('Run failed to start:', error);
       activeRun = null;
     });
+    return;
+  }
+
+
+  if (req.method === 'GET' && req.url.startsWith('/report/')) {
+    const relativePath = req.url.replace('/report/', '');
+    const filePath = path.join(REPORT_DIR, relativePath);
+    if (!filePath.startsWith(REPORT_DIR) || !fs.existsSync(filePath)) {
+      res.writeHead(404);
+      res.end('Report file not found');
+      return;
+    }
+
+    const ext = path.extname(filePath);
+    const contentType = ext === '.html'
+      ? 'text/html; charset=utf-8'
+      : ext === '.js'
+        ? 'text/javascript; charset=utf-8'
+        : ext === '.css'
+          ? 'text/css; charset=utf-8'
+          : ext === '.json'
+            ? 'application/json; charset=utf-8'
+            : 'application/octet-stream';
+
+    res.writeHead(200, { 'Content-Type': contentType });
+    fs.createReadStream(filePath).pipe(res);
     return;
   }
 

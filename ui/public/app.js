@@ -3,6 +3,7 @@ const statusNode = document.getElementById('status');
 const lastRunNode = document.getElementById('lastRun');
 const historyNode = document.getElementById('history');
 const logTailNode = document.getElementById('logTail');
+const latestReportLinkNode = document.getElementById('latestReportLink');
 
 function formatRun(run) {
   if (!run) {
@@ -50,10 +51,29 @@ async function loadRuns() {
   lastRunNode.textContent = formatRun(latest);
   logTailNode.textContent = latest?.logTail || 'Нет данных';
 
+  if (data.latestReportUrl) {
+    latestReportLinkNode.href = data.latestReportUrl;
+    latestReportLinkNode.style.display = 'inline-flex';
+  } else {
+    latestReportLinkNode.style.display = 'none';
+  }
+
   historyNode.innerHTML = '';
   data.history.forEach((run) => {
     const li = document.createElement('li');
-    li.textContent = `${run.startedAt} — ${run.status} (code ${run.code})`;
+    const text = document.createElement('span');
+    text.textContent = `${run.startedAt} — ${run.status} (code ${run.code})`;
+    li.appendChild(text);
+
+    if (run.reportUrl) {
+      const reportLink = document.createElement('a');
+      reportLink.href = run.reportUrl;
+      reportLink.target = '_blank';
+      reportLink.rel = 'noreferrer';
+      reportLink.textContent = ' открыть отчёт';
+      li.appendChild(reportLink);
+    }
+
     historyNode.appendChild(li);
   });
 }
