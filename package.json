@@ -7,7 +7,8 @@
     "test": "playwright test",
     "test:headed": "playwright test --headed",
     "test:ci": "playwright test --reporter=line",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "ui": "node ui/server.js"
   },
   "devDependencies": {
     "@playwright/test": "^1.53.0"
