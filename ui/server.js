@@ -87,12 +87,13 @@ function runTests() {
     code: null,
     stats: null,
     tests: [],
-    log: ''
+    log: '',
+    logTail: ''
   };
 
   activeRun = runRecord;
 
-  const child = spawn('npx', ['playwright', 'test'], {
+  const child = spawn('npx', ['playwright', 'test', '--reporter=json'], {
     cwd: ROOT,
     env: {
       ...process.env,
@@ -117,6 +118,7 @@ function runTests() {
       runRecord.status = code === 0 ? 'passed' : 'failed';
       runRecord.stats = parsed.stats;
       runRecord.tests = parsed.tests;
+      runRecord.logTail = runRecord.log.split('\n').slice(-80).join('\n');
 
       const history = readHistory();
       history.unshift(runRecord);

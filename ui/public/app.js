@@ -2,6 +2,7 @@ const runBtn = document.getElementById('runBtn');
 const statusNode = document.getElementById('status');
 const lastRunNode = document.getElementById('lastRun');
 const historyNode = document.getElementById('history');
+const logTailNode = document.getElementById('logTail');
 
 function formatRun(run) {
   if (!run) {
@@ -17,9 +18,14 @@ function formatRun(run) {
     : '\nСтатистика недоступна';
 
   const failed = (run.tests || []).filter((t) => t.status !== 'passed');
-  const failedText = failed.length
-    ? `\nУпавшие тесты:\n${failed.map((t) => `- ${t.title}: ${t.error || t.status}`).join('\n')}`
-    : '\nВсе тесты прошли.';
+  let failedText = '';
+  if (run.status === 'failed' && (!run.tests || run.tests.length === 0)) {
+    failedText = '\nЗапуск завершился с ошибкой, но тестовый отчет не был сформирован. Проверьте лог ниже (возможны проблемы окружения: браузеры Playwright не установлены, сеть, права, и т.д.).';
+  } else if (failed.length) {
+    failedText = `\nУпавшие тесты:\n${failed.map((t) => `- ${t.title}: ${t.error || t.status}`).join('\n')}`;
+  } else {
+    failedText = '\nВсе тесты прошли.';
+  }
 
   return `ID: ${run.id}
 Статус: ${run.status}
@@ -42,6 +48,7 @@ async function loadRuns() {
 
   const [latest] = data.history;
   lastRunNode.textContent = formatRun(latest);
+  logTailNode.textContent = latest?.logTail || 'Нет данных';
 
   historyNode.innerHTML = '';
   data.history.forEach((run) => {
