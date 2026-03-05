@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Playwright Test Runner</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Playwright Test Runner</h1>
+      <p>Локальный интерфейс для запуска тестов и просмотра результатов.</p>
+
+      <section class="panel">
+        <button id="runBtn">Запустить тесты</button>
+        <span id="status">Состояние: ожидание</span>
+        <button id="openReportBtn" type="button">Открыть последний HTML-отчёт</button>
+        <span id="reportHint">Отчёт пока не найден. Сначала выполните тесты.</span>
+      </section>
+
+      <section class="panel">
+        <h2>Последний запуск</h2>
+        <pre id="lastRun">Нет данных</pre>
+      </section>
+
+      <section class="panel">
+        <h2>История запусков</h2>
+        <ul id="history"></ul>
+      </section>
+
+      <section class="panel">
+        <h2>Лог (хвост)</h2>
+        <pre id="logTail">Нет данных</pre>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
