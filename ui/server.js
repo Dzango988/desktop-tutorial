@@ -100,7 +100,7 @@ function runTests() {
 
   activeRun = runRecord;
 
-  const child = spawn('npx', ['playwright', 'test', '--reporter=json'], {
+  const child = spawn('npx', ['playwright', 'test', '--reporter=list,html,json'], {
     cwd: ROOT,
     env: {
       ...process.env,
