@@ -3,7 +3,8 @@ const statusNode = document.getElementById('status');
 const lastRunNode = document.getElementById('lastRun');
 const historyNode = document.getElementById('history');
 const logTailNode = document.getElementById('logTail');
-const latestReportLinkNode = document.getElementById('latestReportLink');
+const openReportBtnNode = document.getElementById('openReportBtn');
+const reportHintNode = document.getElementById('reportHint');
 
 function formatRun(run) {
   if (!run) {
@@ -52,10 +53,13 @@ async function loadRuns() {
   logTailNode.textContent = latest?.logTail || 'Нет данных';
 
   if (data.latestReportUrl) {
-    latestReportLinkNode.href = data.latestReportUrl;
-    latestReportLinkNode.style.display = 'inline-flex';
+    openReportBtnNode.disabled = false;
+    openReportBtnNode.dataset.href = data.latestReportUrl;
+    reportHintNode.style.display = 'none';
   } else {
-    latestReportLinkNode.style.display = 'none';
+    openReportBtnNode.disabled = true;
+    openReportBtnNode.dataset.href = '';
+    reportHintNode.style.display = 'inline';
   }
 
   historyNode.innerHTML = '';
@@ -77,6 +81,14 @@ async function loadRuns() {
     historyNode.appendChild(li);
   });
 }
+
+
+openReportBtnNode.addEventListener('click', () => {
+  const reportUrl = openReportBtnNode.dataset.href;
+  if (reportUrl) {
+    window.open(reportUrl, '_blank', 'noopener,noreferrer');
+  }
+});
 
 runBtn.addEventListener('click', async () => {
   runBtn.disabled = true;

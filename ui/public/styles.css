@@ -47,3 +47,10 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+
+#reportHint {
+  margin-left: 12px;
+  color: #6b7280;
+  font-size: 14px;
+}
